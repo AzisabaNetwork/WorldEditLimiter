@@ -2,7 +2,8 @@ package net.azisaba.builders.worldeditlimiter;
 
 import com.sk89q.worldedit.EditSession.Stage;
 import com.sk89q.worldedit.LocalSession;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.event.extent.EditSessionEvent;
 import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.util.eventbus.Subscribe;
@@ -27,7 +28,7 @@ public class WorldEditEventListener {
       return;
     }
 
-    Player player = Bukkit.getPlayer(event.getActor().getUniqueId());
+    Player player = Bukkit.getPlayer(actor.getUniqueId());
     limitMaximumBlocks(player, plugin.getPluginConfig().getMaxWorldEditBlockCount());
 
     if (event.getWorld() == null) {
@@ -46,18 +47,10 @@ public class WorldEditEventListener {
   }
 
   private void limitMaximumBlocks(Player p, int num) {
-    LocalSession session = getSession(p);
+    LocalSession session = WorldEdit.getInstance().getSessionManager().get(BukkitAdapter.adapt(p));
     if (session == null) {
       return;
     }
     session.setBlockChangeLimit(num);
-  }
-
-  private LocalSession getSession(Player p) {
-    WorldEditPlugin worldEdit = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
-    if (worldEdit == null) {
-      return null;
-    }
-    return worldEdit.getSession(p);
   }
 }

@@ -1,15 +1,16 @@
 package net.azisaba.builders.worldeditlimiter;
 
-import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.extent.AbstractDelegateExtent;
 import com.sk89q.worldedit.extent.Extent;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockStateHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
+
 
 public class BlockPlaceValidationExtent extends AbstractDelegateExtent {
 
@@ -30,7 +31,8 @@ public class BlockPlaceValidationExtent extends AbstractDelegateExtent {
   }
 
   @Override
-  public boolean setBlock(Vector location, BaseBlock block) throws WorldEditException {
+  public <T extends BlockStateHolder<T>> boolean setBlock(BlockVector3 location, T block)
+      throws WorldEditException {
     if (operationTimeout < System.currentTimeMillis()) {
       if (!sentTimeoutMessage) {
         player.sendMessage(ChatColor.RED + "WorldEditの処理に" + ((double) timeoutMillisecond / 1000d)
@@ -45,7 +47,7 @@ public class BlockPlaceValidationExtent extends AbstractDelegateExtent {
     return false;
   }
 
-  private boolean isInside(WorldBorder border, Vector v) {
+  private boolean isInside(WorldBorder border, BlockVector3 v) {
     Location loc = new Location(world, v.getBlockX(), v.getBlockY(), v.getBlockZ());
     return border.isInside(loc);
   }

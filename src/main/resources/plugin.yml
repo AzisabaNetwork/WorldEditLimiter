@@ -4,3 +4,4 @@ version: ${project.version}
 description: ${project.description}
 author: siloneco
 depend: [ "WorldEdit" ]
+api-version: 1.13
