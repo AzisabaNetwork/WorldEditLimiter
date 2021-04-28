@@ -1,0 +1,3 @@
+WorldEdit:
+  MaxEditBlock: 10000000
+  TimeoutMilliseconds: 3000
