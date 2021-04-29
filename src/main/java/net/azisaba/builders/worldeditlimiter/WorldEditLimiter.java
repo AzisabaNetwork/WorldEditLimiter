@@ -10,6 +10,8 @@ public class WorldEditLimiter extends JavaPlugin {
 
   @Getter
   private WorldEditLimiterConfig pluginConfig;
+  @Getter
+  private final WorldEditLimiterAPI api = new WorldEditLimiterAPI();
 
   private WorldEditEventListener worldEditEventListener;
 
