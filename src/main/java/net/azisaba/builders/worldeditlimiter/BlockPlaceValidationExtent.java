@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 public class BlockPlaceValidationExtent extends AbstractDelegateExtent {
 
+  private final WorldEditLimiterAPI api;
   private final Player player;
   private final World world;
 
@@ -21,9 +22,11 @@ public class BlockPlaceValidationExtent extends AbstractDelegateExtent {
   private final long operationTimeout;
   private boolean sentTimeoutMessage = false;
 
-  protected BlockPlaceValidationExtent(Player player, World world, long timeoutMillisecond,
+  protected BlockPlaceValidationExtent(WorldEditLimiterAPI api, Player player, World world,
+      long timeoutMillisecond,
       Extent extent) {
     super(extent);
+    this.api = api;
     this.player = player;
     this.world = world;
     this.timeoutMillisecond = timeoutMillisecond;
@@ -41,14 +44,20 @@ public class BlockPlaceValidationExtent extends AbstractDelegateExtent {
       }
       return false;
     }
-    if (isInside(world.getWorldBorder(), location)) {
-      return super.setBlock(location, block);
+    if (!isInside(world.getWorldBorder(), location)) {
+      return false;
     }
-    return false;
+    if (!api.executeFunction(player, getLocation(world, location))) {
+      return false;
+    }
+    return super.setBlock(location, block);
   }
 
   private boolean isInside(WorldBorder border, BlockVector3 v) {
-    Location loc = new Location(world, v.getBlockX(), v.getBlockY(), v.getBlockZ());
-    return border.isInside(loc);
+    return border.isInside(getLocation(world, v));
+  }
+
+  private Location getLocation(World world, BlockVector3 v) {
+    return new Location(world, v.getBlockX(), v.getBlockY(), v.getBlockZ());
   }
 }

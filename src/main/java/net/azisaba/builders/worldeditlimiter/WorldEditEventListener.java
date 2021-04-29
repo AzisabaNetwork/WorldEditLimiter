@@ -37,7 +37,7 @@ public class WorldEditEventListener {
     World world = Bukkit.getWorld(event.getWorld().getName());
 
     try {
-      event.setExtent(new BlockPlaceValidationExtent(player, world,
+      event.setExtent(new BlockPlaceValidationExtent(plugin.getApi(), player, world,
           plugin.getPluginConfig().getWorldEditTimeoutMilliseconds(), event.getExtent()));
     } catch (IllegalAccessError e) {
       if (!e.getMessage().startsWith("tried to access method ")) {
